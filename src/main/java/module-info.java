@@ -5,4 +5,6 @@ module me.betanow.gameoflife {
 
     opens me.betanow.gameoflife to javafx.fxml;
     exports me.betanow.gameoflife;
+    exports me.betanow.gameoflife.controllers;
+    opens me.betanow.gameoflife.controllers to javafx.fxml;
 }
