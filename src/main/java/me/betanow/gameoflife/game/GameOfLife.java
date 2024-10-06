@@ -62,6 +62,14 @@ public class GameOfLife {
     }
 
     /**
+     * Do the next generation
+     */
+    public void nextGeneration () {
+        board.nextGeneration();
+        draw();
+    }
+
+    /**
      * Increment the board
      */
     public void draw () {

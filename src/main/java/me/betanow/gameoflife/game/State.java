@@ -32,7 +32,7 @@ public enum State {
      */
     public Color toColor (int age) {
         return switch (this) {
-            case ALIVE -> age == 0 ? Color.rgb(255, 173, 212, 1) : Color.rgb(235, 47, 152, 1);
+            case ALIVE -> age <= 1 ? Color.rgb(255, 173, 212, 1) : Color.rgb(235, 47, 152, 1);
             case DEAD -> Color.rgb(255, 255, 255, 0);
             case INFECTED -> Color.rgb(47, 110, 235, (age / 3.0));
         };

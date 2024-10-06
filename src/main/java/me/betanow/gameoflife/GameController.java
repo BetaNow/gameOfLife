@@ -1,8 +1,11 @@
 package me.betanow.gameoflife;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 /**
  * The controller for the setup view
@@ -32,12 +35,27 @@ public class GameController {
     public GridPane gridPane;
 
     /**
+     * The generation
+     */
+    private int generation = 0;
+
+    /**
+     * The playing state
+     */
+    private boolean playing = false;
+
+    /**
+     * The timeline
+     */
+    private Timeline timeline;
+
+    /**
      * Initialize the controller
      */
     @FXML
-    public void initialize() {
+    public void initialize () {
         // Add a listener to the speed toggle group
-        speed.selectedToggleProperty().addListener((observable, oldValue, newValue) -> onSpeedChange(newValue));
+        speed.selectedToggleProperty().addListener((observable, oldValue, newValue)->onSpeedChange(newValue));
     }
 
     /**
@@ -45,6 +63,16 @@ public class GameController {
      */
     @FXML
     public void play () {
+        playing = !playing;
+        playButton.setText(playing ? "Pause" : "Play");
+
+        if (playing) {
+            startTimeline();
+        } else {
+            if (timeline != null) {
+                timeline.stop();
+            }
+        }
     }
 
     /**
@@ -53,6 +81,7 @@ public class GameController {
     @FXML
     public void clear () {
         GameApplication.getGame().clear();
+        clearGenerationLabel();
     }
 
     /**
@@ -60,6 +89,8 @@ public class GameController {
      */
     @FXML
     public void increment () {
+        GameApplication.getGame().nextGeneration();
+        updateGenerationLabel();
     }
 
     /**
@@ -68,15 +99,46 @@ public class GameController {
     @FXML
     public void randomize () {
         GameApplication.getGame().randomize();
+        clearGenerationLabel();
     }
 
     /**
      * Update the generation label
-     *
-     * @param generation - the generation to update to
      */
-    public void updateGenerationLabel (int generation) {
+    private void updateGenerationLabel () {
+        generation++;
         generationLabel.setText("Generation: " + generation);
+    }
+
+    /**
+     * Clear the generation label
+     */
+    private void clearGenerationLabel () {
+        generation = 0;
+        generationLabel.setText("Generation: 0");
+    }
+
+    /**
+     * Start the timeline
+     */
+    private void startTimeline () {
+        String speed = ((RadioButton) this.speed.getSelectedToggle()).getText();
+        int delay = switch (speed) {
+            case "Slow" -> 1000;
+            case "Fast" -> 250;
+            default -> 500;
+        };
+
+        if (timeline != null) {
+            timeline.stop();
+        }
+
+        timeline = new Timeline(new KeyFrame(Duration.millis(delay), event->{
+            GameApplication.getGame().nextGeneration();
+            updateGenerationLabel();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     /**
@@ -84,11 +146,11 @@ public class GameController {
      *
      * @param newValue - the new value
      */
-    private void onSpeedChange(Toggle newValue) {
+    private void onSpeedChange (Toggle newValue) {
         if (newValue != null) {
-            RadioButton selectedRadioButton = (RadioButton) newValue;
-            String speed = selectedRadioButton.getText();
-            System.out.println("Speed changed to: " + speed);
+            if (playing) {
+                startTimeline();
+            }
         }
     }
 

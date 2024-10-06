@@ -10,12 +10,12 @@ public class Cell {
     /**
      * The x coordinate of the cell
      */
-    private int x;
+    private final int x;
 
     /**
      * The y coordinate of the cell
      */
-    private int y;
+    private final int y;
 
     /**
      * The state of the cell
@@ -42,16 +42,11 @@ public class Cell {
      * Create a random cell
      */
     public void randomize () {
-        State[] states = State.values();
-
-        // Add dead state in states array to make it more likely to be dead
-        State[] newStates = new State[states.length + 1];
-        System.arraycopy(states, 0, newStates, 0, states.length);
-        newStates[states.length] = State.DEAD;
+        State[] states = new State[]{ State.ALIVE, State.DEAD, State.DEAD, State.DEAD };
 
         // Set the state of the cell and the age of the cell
-        this.setState(newStates[(int) (Math.random() * newStates.length)]);
-        this.setAge((int) (Math.random() * 3));
+        this.setState(states[(int) (Math.random() * states.length)]);
+        this.setAge(1 + (int) (Math.random() * 2));
     }
 
     /**
@@ -69,7 +64,7 @@ public class Cell {
 
         // Add click event
         // To show the state of the cell, and the age of the cell
-        rectangle.setOnMouseClicked(event -> System.out.println("State: " + state + ", Age: " + age));
+        rectangle.setOnMouseClicked(event->System.out.println("State: " + state + ", Age: " + age));
 
         return rectangle;
     }
@@ -115,24 +110,6 @@ public class Cell {
     // Setters
 
     /**
-     * Set the x coordinate of the cell
-     *
-     * @param x - the x coordinate of the cell
-     */
-    public void setX (int x) {
-        this.x = x;
-    }
-
-    /**
-     * Set the y coordinate of the cell
-     *
-     * @param y - the y coordinate of the cell
-     */
-    public void setY (int y) {
-        this.y = y;
-    }
-
-    /**
      * Set the state of the cell
      *
      * @param state - the state of the cell
@@ -156,5 +133,15 @@ public class Cell {
      */
     public void incrementAge () {
         this.age++;
+    }
+
+    // Override
+
+    /**
+     * Get the string representation of the cell
+     */
+    @Override
+    public String toString () {
+        return this.state.toString();
     }
 }
