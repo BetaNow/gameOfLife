@@ -2,6 +2,7 @@ package me.betanow.gameoflife;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 
 /**
  * The controller for the setup view
@@ -26,6 +27,11 @@ public class GameController {
     public ToggleGroup speed;
 
     /**
+     * The grid pane
+     */
+    public GridPane gridPane;
+
+    /**
      * Initialize the controller
      */
     @FXML
@@ -46,6 +52,7 @@ public class GameController {
      */
     @FXML
     public void clear () {
+        GameApplication.getGame().clear();
     }
 
     /**
@@ -60,6 +67,7 @@ public class GameController {
      */
     @FXML
     public void randomize () {
+        GameApplication.getGame().randomize();
     }
 
     /**
@@ -82,5 +90,14 @@ public class GameController {
             String speed = selectedRadioButton.getText();
             System.out.println("Speed changed to: " + speed);
         }
+    }
+
+    /**
+     * Get the grid pane
+     *
+     * @return the grid pane
+     */
+    public GridPane getGridPane () {
+        return gridPane;
     }
 }
